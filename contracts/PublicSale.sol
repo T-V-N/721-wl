@@ -14,8 +14,10 @@ contract PublicSale is Ownable {
     uint256 public limit = 1000;
     uint256 public price = 0.05 ether;
     bool public saleActive = true;
+    bool public wlActive = true;
 
     mapping(address => bool) hasBought;
+    mapping(address => bool) wl;
 
     NFTI public NFT;
 
@@ -29,6 +31,10 @@ contract PublicSale is Ownable {
         require(!hasBought[msg.sender], "Already bought");
         require(msg.value == price, "Not enough ether paid");
 
+        if (wlActive) {
+            require(wl[msg.sender], "Not whitelisted");
+        }
+
         NFT.safeMint(msg.sender, 1);
         sold += 1;
         hasBought[msg.sender] = true;
@@ -41,6 +47,12 @@ contract PublicSale is Ownable {
 
     function setLimit(uint256 _limit) external onlyOwner {
         limit = _limit;
+    }
+
+    function setWhitelist(address[] memory _addresses, bool isWl) external onlyOwner {
+        for (uint256 i = 0; i <= _addresses.length; i++) {
+            wl[_addresses[i]] = isWl;
+        }
     }
 
     function setPrice(uint256 _price) external onlyOwner {
