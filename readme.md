@@ -36,6 +36,18 @@ function extractToken(uint256 amount, address token)
 function extractNFT(uint256 NFTID, address token)
 ```
 
+Включить/выключить вайтлист (true/false)
+
+```
+function setWhitelistActive(bool isActive)
+```
+
+Дать/убрать юзерам addresses вайтлист (true/false)
+
+```
+function setWhitelist(bool isActive)
+```
+
 ## Env
 
 .env file:
