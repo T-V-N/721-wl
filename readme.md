@@ -45,7 +45,7 @@ function setWhitelistActive(bool isActive)
 Дать/убрать юзерам addresses вайтлист (true/false)
 
 ```
-function setWhitelist(bool isActive)
+setWhitelist(address[] memory _addresses, bool isWl)
 ```
 
 ## Env
