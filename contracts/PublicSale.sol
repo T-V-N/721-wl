@@ -50,7 +50,7 @@ contract PublicSale is Ownable {
     }
 
     function setWhitelist(address[] memory _addresses, bool isWl) external onlyOwner {
-        for (uint256 i = 0; i <= _addresses.length; i++) {
+        for (uint256 i = 0; i < _addresses.length; i++) {
             wl[_addresses[i]] = isWl;
         }
     }
