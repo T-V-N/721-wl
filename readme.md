@@ -48,6 +48,35 @@ function setWhitelistActive(bool isActive)
 setWhitelist(address[] memory _addresses, bool isWl)
 ```
 
+## Механизм работы покупки и подписи
+
+Покупка осуществляется функцией
+
+```
+function buyToken(bytes memory signature)
+```
+
+У бекенда есть публичный и приватный ключи. Для удобства, можно в любом ethereum кошельке создать адрес и получить его приватник. В этом случае сам адрес будет публичным ключем, а его приватник - приватным ключом.
+Контракт тоже хранит публичный ключ в поле manager. Manager задается при создании контракта.
+
+В приложении бекенду передается адрес кошелька, с которого юзер хочет минтить токен. Дальше бекенд подписывает приватным ключем адрес кошелька и отдает юзеру. Юзер вызывает метод buyToken у контракта и передает туда подпись. Контракт внутри проверяет валидна ли подпичь (соответствует ли публичному ключу ака значению поля manager). Если все ок, то происходит минтинг
+
+Пример создания подписи на js.
+
+```
+const signerAcc = new Wallet(DEPLOYER_PRIVATE_KEY);
+const { Wallet } = require("@ethersproject/wallet");
+
+const types = ['address', 'address'];
+const values = [
+    deployer.toLowerCase(),
+    SALEC.address.toLowerCase()
+];
+const mesGenerated = ethers.utils.solidityKeccak256(types, values);
+
+const signature = await signerAcc.signMessage(ethers.utils.arrayify(mesGenerated));
+```
+
 ## Env
 
 .env file:

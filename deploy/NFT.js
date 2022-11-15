@@ -1,10 +1,12 @@
 const tryVerify = require("./utils/tryVerify");
 const { ethers } = require("hardhat");
+const { Wallet } = require("@ethersproject/wallet");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  const { SIGNERPK } = process.env;
+  const { DEPLOYER_PRIVATE_KEY } = process.env;
+  const signerAcc = new Wallet(DEPLOYER_PRIVATE_KEY);
 
   const tokenArgs = [
     "TestNFT",
@@ -18,7 +20,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
 
   const saleArgs = [
-    NFT.address
+    NFT.address,
+    deployer
   ];
 
   const SALE = await deploy("PublicSale", {
@@ -47,6 +50,17 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   );
 
   await NFTC.setManager(SALE.address);
+
+  const types = ['address', 'address'];
+  const values = [
+      deployer.toLowerCase(),
+      SALEC.address.toLowerCase()
+  ];
+  const mesGenerated = ethers.utils.solidityKeccak256(types, values);
+
+  const signature = await signerAcc.signMessage(ethers.utils.arrayify(mesGenerated));
+
+  console.log("Signature is: ", signature)
   };
 
 module.exports.tags = ["NFT"];
