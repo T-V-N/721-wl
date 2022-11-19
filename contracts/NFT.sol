@@ -1,11 +1,12 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.13;
 
-import "erc721a/contracts/ERC721A.sol";
+import {ERC721} from "openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
+import "./opensea/DefaultOperatorFilterer.sol";
 
-contract NFT is ERC721A, Ownable {
+contract NFT is ERC721, Ownable, DefaultOperatorFilterer {
     address public manager;
     string public _baseTokenURI;
 
@@ -14,7 +15,7 @@ contract NFT is ERC721A, Ownable {
         _;
     }
 
-    constructor(string memory name_, string memory symbol_) ERC721A(name_, symbol_) {
+    constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
         manager = msg.sender;
     }
 
@@ -32,5 +33,25 @@ contract NFT is ERC721A, Ownable {
 
     function _baseURI() internal view override returns (string memory) {
         return _baseTokenURI;
+    }
+
+    function setApprovalForAll(address operator, bool approved) public override onlyAllowedOperatorApproval(operator) {
+        super.setApprovalForAll(operator, approved);
+    }
+
+    function approve(address operator, uint256 tokenId) public override onlyAllowedOperatorApproval(operator) {
+        super.approve(operator, tokenId);
+    }
+
+    function transferFrom(address from, address to, uint256 tokenId) public override onlyAllowedOperator(from) {
+        super.transferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId) public override onlyAllowedOperator(from) {
+        super.safeTransferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public override onlyAllowedOperator(from) {
+        super.safeTransferFrom(from, to, tokenId, data);
     }
 }

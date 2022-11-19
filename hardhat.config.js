@@ -12,14 +12,14 @@ const { DEPLOYER_PRIVATE_KEY, INFURA_PROJECT_ID, ETHERSCAN_API, BSC_MNEMONIC } =
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  solidity: "0.8.13",
   networks: {
     ganache: {
       url: "http://127.0.0.1:7545",
       chainId: 1337,
     },
-    ropsten: {
-      url: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`,
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [DEPLOYER_PRIVATE_KEY],
     },
     bsctestnet: {
