@@ -9,6 +9,7 @@ import "./opensea/DefaultOperatorFilterer.sol";
 contract NFT is ERC721, Ownable, DefaultOperatorFilterer {
     address public manager;
     string public _baseTokenURI;
+    uint256 public minted = 0;
 
     modifier onlyManager() {
         require(manager == _msgSender(), "Only manager can mint");
@@ -19,7 +20,22 @@ contract NFT is ERC721, Ownable, DefaultOperatorFilterer {
         manager = msg.sender;
     }
 
-    function safeMint(address to, uint256 quantity) external onlyManager {
+    function safeMint(address to, uint256 qty) external onlyManager {
+        for (uint i = 0; i < qty; i++) {
+            _safeMint(to, minted);
+            minted++;
+        }
+    }
+
+    function getPrice(uint256 tier) public pure returns (uint256) {
+        if (tier == 0) return 0.1 ether;
+        if (tier == 1) return 0.2 ether;
+        if (tier == 2) return 0.4 ether;
+        if (tier == 3) return 1 ether;
+        return 1 ether;
+    }
+
+    function mintPublic(address to, uint256 quantity) external {
         _safeMint(to, quantity);
     }
 
