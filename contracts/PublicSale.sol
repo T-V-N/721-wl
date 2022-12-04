@@ -68,7 +68,7 @@ contract PublicSale is Ownable {
     }
 
     function setWhitelistActive(bool isActive) external onlyOwner {
-        saleActive = isActive;
+        wlActive = isActive;
     }
 
     function setPrice(uint256 _price) external onlyOwner {
