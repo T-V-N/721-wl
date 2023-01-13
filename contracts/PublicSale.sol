@@ -19,10 +19,11 @@ contract PublicSale is Ownable {
     uint256 public price = 0.05 ether;
     bool public saleActive = true;
     bool public wlActive = true;
+    uint256 public buyLimit = 3;
 
     address public manager;
 
-    mapping(address => bool) hasBought;
+    mapping(address => uint256) bought;
     mapping(address => bool) wl;
 
     NFTI public NFT;
@@ -35,7 +36,7 @@ contract PublicSale is Ownable {
     function buyToken(bytes memory signature) public payable {
         require(saleActive, "Sale not active");
         require(sold <= limit, "Sale goal reached");
-        require(!hasBought[msg.sender], "Already bought");
+        require(bought[msg.sender] <= buyLimit, "Already bought all available tokens");
         require(msg.value == price, "Not enough ether paid");
         require(verifySig(address(msg.sender), signature), "Wrong signature!");
 
@@ -45,12 +46,16 @@ contract PublicSale is Ownable {
 
         NFT.safeMint(msg.sender, 1);
         sold += 1;
-        hasBought[msg.sender] = true;
+        bought[msg.sender] += 1;
     }
 
     //control functions
     function setNFT(address _NFT) external onlyOwner {
         NFT = NFTI(_NFT);
+    }
+
+    function setBuyLimit(uint256 _limit) external onlyOwner {
+        buyLimit = _limit;
     }
 
     function setManager(address _manager) external onlyOwner {
