@@ -36,7 +36,7 @@ contract PublicSale is Ownable {
     function buyToken(bytes memory signature) public payable {
         require(saleActive, "Sale not active");
         require(sold <= limit, "Sale goal reached");
-        require(bought[msg.sender] <= buyLimit, "Already bought all available tokens");
+        require(bought[msg.sender] < buyLimit, "Already bought all available tokens");
         require(msg.value == price, "Not enough ether paid");
         require(verifySig(address(msg.sender), signature), "Wrong signature!");
 
