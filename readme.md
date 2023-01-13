@@ -1,4 +1,4 @@
-## NFT Whitelist + 721A + Public Mint API
+## NFT Whitelist + 721 + Public Mint API
 
 Установить количество токенов на продажу
 
